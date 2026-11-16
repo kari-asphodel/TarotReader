@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-ReadingRecord::ReadingRecord(const std::string& readingType, const std::string& question const std::string& date)
+ReadingRecord::ReadingRecord(const std::string& readingType, const std::string& question, const std::string& date)
 {
 	this->readingType = readingType;
 	this->question = question;

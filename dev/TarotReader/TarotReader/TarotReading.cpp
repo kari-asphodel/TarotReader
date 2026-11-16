@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <sstream>
 
 TarotReading::TarotReading(TarotDeck& deck) : readingDeck(deck) {}
 
@@ -203,12 +204,20 @@ void TarotReading::DisplayHistory() const
 }
 std::string TarotReading::GetCurrentDate() const
 {
-	std::time_t currentTime = std::time(nullptr);
-	std::tm localTime();
-	localtime_s(&localTime, &currentTime);
+	std::time_t currentTime =
+		std::time(nullptr);
+
+	std::tm localTime{};
+
+	localtime_s(
+		&localTime,
+		&currentTime
+	);
 
 	std::ostringstream date;
-	date << std::setfill('0')
+
+	date
+		<< std::setfill('0')
 		<< std::setw(2)
 		<< localTime.tm_mon + 1
 		<< "/"
@@ -216,8 +225,10 @@ std::string TarotReading::GetCurrentDate() const
 		<< localTime.tm_mday
 		<< "/"
 		<< localTime.tm_year + 1900;
+
 	return date.str();
 }
+
 
 void TarotReading::SaveHistory(const std::string& fileName) const
 {
@@ -236,11 +247,12 @@ void TarotReading::SaveHistory(const std::string& fileName) const
 		outputFile << record.GetCardCount() << "\n";
 		for (int i = 0; i < record.GetCardCount(); i++)
 		{
-			outputFile << record.GetPosition(i)
+			outputFile
+				<< record.GetPosition(i)
 				<< "|"
-				outputFile << record.GetCardName(i)
+				<< record.GetCardName(i)
 				<< "|"
-				outputFile << record.GetReversedState(i)
+				<< record.GetReversedState(i)
 				<< "\n";
 		}
 		outputFile << "END\n";
