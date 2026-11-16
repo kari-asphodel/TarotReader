@@ -1,5 +1,6 @@
 #include "TarotDeck.h"
 #include "ConsoleColor.h"
+#include "TarotConstants.h"
 
 #include <cstdlib>
 #include <fstream>
@@ -7,9 +8,14 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 TarotDeck::TarotDeck()
 {
+    if (!LoadArtworkFromFile("data/major_arcana_art.txt"))
+    {
+        return;
+    }
     LoadDeckFromFile("data/major_arcana.txt");
 }
 
@@ -56,7 +62,11 @@ void TarotDeck::LoadDeckFromFile(const std::string& fileName)
             {
                 throw std::invalid_argument("Invalid card number");
             }
-            std::string asciiArt = CreateAsciiArt(number, name);
+            if (number < TarotConstants::FirstMajorArcana || number > TarotConstants::LastMajorArcana)
+            {
+                throw std::out_of_range("Invalid Major Arcana Number");
+            }
+            std::string asciiArt = artworks.at(number;)
             cards.push_back(TarotCard(number, name, keywords, uprightMeaning, reversedMeaning, asciiArt));
         }
         catch (const std::exception&)
@@ -66,48 +76,87 @@ void TarotDeck::LoadDeckFromFile(const std::string& fileName)
     }
     inputFile.close();
 }
-std::string TarotDeck::CreateAsciiArt(int number, const std::string& name) const
+bool TarotDeck::LoadArtworkFromFile(const std::string& fileName)
 {
-    std::stringstream art;
-    art
-        << "+-----------------------+\n"
-        << "|                       |\n"
-        << "|          "
-        << number;
-    if (number < 10)
+    std::ifstream inputFile(fileName);
+    if (!inputFile.is_open())
     {
-        art << " ";
+        ConsoleColor::Print("Cannot open the Major Arcana Artwork file.\n", ConsoleColor::Ink::Red);
+        return false;
     }
-    art
-        << "            |\n"
-        << "|                       |\n"
-        << "|           *           |\n"
-        << "|          /|\\          |\n"
-        << "|          / \\          |\n"
-        << "|                       |\n";
-
-    std::string displayName = name;
-    if (displayName.length() > 21)
+    const int expectedCards = TarotConstants::LastMajorArcana - TarotConstant::FirstMajorArcana + 1;
+    artworks.assign(expectedCards, "");
+    std::vector<bool>found(expectedCards, false);
+    std::string line;
+    int currentNumber = -1;
+    std::string currentArt;
+    while (std::getline(inputFile, line))
     {
-        displayName = displayName.substr(0, 21);
+        // ignores the optional file comment before the first card
+        if (currentNumber == -1 && (line.empty() || line[0] == '#'))
+        {
+            continue;
+        }
+        if (line.rfind("CARD|", 0) == 0)
+        {
+            if (currentNumber != -1)
+            {
+                return false; // previous card had no endcard
+            }
+            try
+            {
+                std::string numberText = line.substr(5);
+                std::size_t processed = 0;
+                int number = std::stoi(numberText, &processed);
+                if (processed != numberText.length() || number < TarotConstants::FirstMajorArcana || number > TarotConstants::LastMajorArcana || found[number])
+                {
+                    return false;
+                }
+                currentNumber = number;
+                currentArt.clear();
+            }
+            catch (const std::invalid_argument&)
+            {
+                return false;
+            }
+            catch (const std::out_of_range&)
+            {
+                return false;
+            }
+        }
+        else if (line == "ENDCARD")
+        {
+            if (currentNumber == -1 || currentArt.empty())
+            {
+                return false;
+            }
+            artworks[currentNumber] = currentArt;
+            found[currentNumber] = true;
+            currentNumber = -1;
+        }
+        else if (currentNumber != -1)
+        {
+            currentArt += line += "\n"; // preserve each art line, including leading spaces
+        }
+        else
+        {
+            return false; // unexpected text outside a card block
+        }
+        inputFile.close();
     }
-    int totalPadding = 23 - static_cast<int>(displayName.length());
-    int leftPadding = totalPadding / 2;
-    int rightPadding = totalPadding - leftPadding;
-    art << "|";
-    for (int i = 0; i < leftPadding; i++)
+    if (currentNumber != -1)
     {
-        art << " ";
+        return false;
     }
-    art << displayName;
-    for (int i = 0; i < rightPadding; i++)
+    for (bool wasFound : found)
     {
-        art << " ";
+        if (!wasFound)
+        {
+            ConsoleColor::Print("Artwork file is missing one or more cards.\n", ConsoleColor::Ink::Red);
+            return false;
+        }
     }
-    art
-        << "|\n"
-        << "+-----------------------+\n";
-    return art.str();
+    return true;
 }
 
 bool TarotDeck::IsValidIndex(int index) const
@@ -120,7 +169,9 @@ int TarotDeck::GetCardCount() const
 }
 bool TarotDeck::IsLoaded() const
 {
-    return cards.size() == 22;
+    const int expectedCards = TarotConstants::LastMajorArcana - TarotConstants::FirstMajorArcana + 1;
+
+    return static_cast<int>(cards.size()) == expectedCards && static_cast<int>(artworks.size()) == expectedCards;
 }
 void TarotDeck::DisplayDeck() const
 {
