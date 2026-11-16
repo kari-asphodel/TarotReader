@@ -66,7 +66,7 @@ void TarotDeck::LoadDeckFromFile(const std::string& fileName)
             {
                 throw std::out_of_range("Invalid Major Arcana Number");
             }
-            std::string asciiArt = artworks.at(number;)
+            std::string asciiArt = artworks.at(number);
             cards.push_back(TarotCard(number, name, keywords, uprightMeaning, reversedMeaning, asciiArt));
         }
         catch (const std::exception&)
@@ -84,7 +84,7 @@ bool TarotDeck::LoadArtworkFromFile(const std::string& fileName)
         ConsoleColor::Print("Cannot open the Major Arcana Artwork file.\n", ConsoleColor::Ink::Red);
         return false;
     }
-    const int expectedCards = TarotConstants::LastMajorArcana - TarotConstant::FirstMajorArcana + 1;
+    const int expectedCards = TarotConstants::LastMajorArcana - TarotConstants::FirstMajorArcana + 1;
     artworks.assign(expectedCards, "");
     std::vector<bool>found(expectedCards, false);
     std::string line;
@@ -142,8 +142,8 @@ bool TarotDeck::LoadArtworkFromFile(const std::string& fileName)
         {
             return false; // unexpected text outside a card block
         }
-        inputFile.close();
     }
+    inputFile.close();
     if (currentNumber != -1)
     {
         return false;
@@ -169,7 +169,7 @@ int TarotDeck::GetCardCount() const
 }
 bool TarotDeck::IsLoaded() const
 {
-    const int expectedCards = TarotConstants::LastMajorArcana - TarotConstants::FirstMajorArcana + 1;
+    const int expectedCards =TarotConstants::LastMajorArcana - TarotConstants::FirstMajorArcana + 1;
 
     return static_cast<int>(cards.size()) == expectedCards && static_cast<int>(artworks.size()) == expectedCards;
 }
