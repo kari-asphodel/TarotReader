@@ -259,3 +259,73 @@ void TarotReading::SaveHistory(const std::string& fileName) const
 	}
 	outputFile.close();
 }
+void TarotReading::LoadHistory(const std::string& fileName) 
+{
+	std::ifstream inputFile(fileName);
+
+	if (!inputFile.is_open())
+	{
+		return;
+	}
+	history.clear();
+	std::string line;
+
+	while (std::getline(inputFile, line))
+	{
+		if (line != "READING")
+		{
+			continue;
+		}
+		std::string readingType;
+		std::string date;
+		std::string question;
+		std::string cardCountText;
+
+		if (!std::getline(inputFile,readingType) ||!std::getline(inputFile,date) ||!std::getline(inputFile,question) ||!std::getline(inputFile,cardCountText))
+		{
+			break;
+		}
+		int cardCount = 0;
+		try
+		{
+			cardCount = std::stoi(cardCoundText);
+		}
+		catch (...)
+		{
+			continue;
+		}
+		ReadingRecord record(readingType, question, date);
+		bool validRecord = true;
+		for (int i = 0; i < cardCount; i++)
+		{
+			std::string cardLine;
+			if (!std::getline(inputFile, cardLine))
+			{
+				validRecord = false;
+				break;
+			}
+			std::stringstream stream(cardLine);
+			std::string position;
+			std::string cardName;
+			std::string reversedText;
+			if (!std::getline(stream, position, '|') || !std::getline(stream, cardName, '|') || !std::getline(stream, reversedText, '|'))
+			{
+				validRecord = false;
+				break;
+			}
+			bool isReversed = reversedText == "1";
+			record.AddCard(position, cardName, isReversed);
+		}
+		std::string endMarker;
+		if (!std::getline(inputFile, endMarker))
+		{
+			break;
+		}
+
+		if (validRecord && endMarker == "END")
+		{
+			history.push_back(record);
+		}
+	}
+	inputFile.close();
+}
