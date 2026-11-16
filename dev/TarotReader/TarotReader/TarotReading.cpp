@@ -3,6 +3,8 @@
 #include "Input.h"
 #include "TarotConstants.h"
 
+#include <ctime>
+#include <fstream>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
@@ -47,9 +49,10 @@ void TarotReading::OneCardReading()
 	card.DisplayReading(isReversed);
 	ConsoleColor::Print("\nYour question:\n", ConsoleColor::Ink::Yellow);
 	std::cout << question << "\n";
-	ReadingRecord record("ONE-CARD READING", question);
+	ReadingRecord record("ONE-CARD READING", question, GetCurrentDate());
 	record.AddCard("", card.GetName(), isReversed);
 	history.push_back(record);
+	SaveHistory("data/reading_history.txt");
 }
 
 void TarotReading::ThreeCardReading()
@@ -82,11 +85,12 @@ void TarotReading::ThreeCardReading()
 	ConsoleColor::Print("Your question:\n", ConsoleColor::Ink::Yellow);
 	std::cout << question << "\n";
 
-	ReadingRecord record("PAST - PRESENT - FUTURE", question);
+	ReadingRecord record("PAST - PRESENT - FUTURE", question, GetCurrentDate());
 	record.AddCard("PAST", past.GetName(), pastReversed);
 	record.AddCard("PRESENT", present.GetName(), presentReversed);
 	record.AddCard("FUTURE", future.GetName(), futureReversed);
 	history.push_back(record);
+	SaveHistory("data/reading_history.txt");
 }
 
 void TarotReading::DisplayMeaning(const std::string& position, const TarotCard& card, bool isReversed) const
@@ -196,4 +200,50 @@ void TarotReading::DisplayHistory() const
 		history[i].Display();
 		std::cout << "\n";
 	}
+}
+std::string TarotReading::GetCurrentDate() const
+{
+	std::time_t currentTime = std::time(nullptr);
+	std::tm localTime();
+	localtime_s(&localTime, &currentTime);
+
+	std::ostringstream date;
+	date << std::setfill('0')
+		<< std::setw(2)
+		<< localTime.tm_mon + 1
+		<< "/"
+		<< std::setw(2)
+		<< localTime.tm_mday
+		<< "/"
+		<< localTime.tm_year + 1900;
+	return date.str();
+}
+
+void TarotReading::SaveHistory(const std::string& fileName) const
+{
+	std::ofstream outputFile(fileName);
+	if (!outputFile.is_open())
+	{
+		ConsoleColor::Print("\nThe reading history could not be saved.\n", ConsoleColor::Ink::Red);
+		return;
+	}
+	for (const ReadingRecord& record : history)
+	{
+		outputFile << "READING\n";
+		outputFile << record.GetReadingType() << "\n";
+		outputFile << record.GetDate() << "\n";
+		outputFile << record.GetQuestion() << "\n";
+		outputFile << record.GetCardCount() << "\n";
+		for (int i = 0; i < record.GetCardCount(); i++)
+		{
+			outputFile << record.GetPosition(i)
+				<< "|"
+				outputFile << record.GetCardName(i)
+				<< "|"
+				outputFile << record.GetReversedState(i)
+				<< "\n";
+		}
+		outputFile << "END\n";
+	}
+	outputFile.close();
 }
