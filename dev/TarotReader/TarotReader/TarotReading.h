@@ -14,7 +14,7 @@ public:
 	void DisplayHistory() const;
 
 	void SaveHistory(const std::string& fileName) const;
-	void LoadHistory(const std::string& fileName) const;
+	void LoadHistory(const std::string& fileName);
 private:
 	TarotDeck& readingDeck;
 	std::vector<ReadingRecord> history;

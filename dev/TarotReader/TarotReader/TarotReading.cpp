@@ -288,7 +288,7 @@ void TarotReading::LoadHistory(const std::string& fileName)
 		int cardCount = 0;
 		try
 		{
-			cardCount = std::stoi(cardCoundText);
+			cardCount = std::stoi(cardCountText);
 		}
 		catch (...)
 		{
