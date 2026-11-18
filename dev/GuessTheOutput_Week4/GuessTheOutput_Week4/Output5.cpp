@@ -6,7 +6,7 @@ void Output5()
 
 	for (int i = 1; i <= 4; i++)
 	{
-		total += i;
+		total += i; 
 	}
 
 	std::cout << total;
@@ -14,6 +14,6 @@ void Output5()
 
 //A 4
 //B 6
-//C 10
+//C 10 - THIS ONE
 //D 11
 //E The loop summons four accountants from the crypt and prints TAXES.

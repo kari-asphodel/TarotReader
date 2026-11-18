@@ -21,6 +21,6 @@ void Output10()
 }
 //A Pass
 //B Great
-//C Pass Great
+//C Pass Great - THIS ONE
 //D Excellent
 //E The three independent if statements form a coven and print HEX HEX HEX.

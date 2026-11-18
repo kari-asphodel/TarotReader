@@ -33,6 +33,6 @@ void Output2()
 
 //A 10
 //B 7
-//C 4
+//C 4 - THIS ONE
 //D 3
 //E The ghost files a haunting-related workers compensation claim and prints UNIONIZE.
