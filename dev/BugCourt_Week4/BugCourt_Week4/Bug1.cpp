@@ -26,13 +26,13 @@ int main()
         }
         else if (choice == 4)
         {
-            choice = 0;
+            std::cout << "Goodbye.\n";
         }
     }
 }
 //  What is the actual bug ?
 //- A. The loop has a missing semicolon.
-//- B. The exit branch resets `choice` to `0`, so the loop never ends.
+//- B. The exit branch resets `choice` to `0`, so the loop never ends. - THIS ONE
 //- C. The code will not compile because `choice` is initialized to zero.
 //- D. The program exits normally when 4 is entered.
 //- E. The menu has been cursed by an immortal exit sign that only leads back to the dungeon.

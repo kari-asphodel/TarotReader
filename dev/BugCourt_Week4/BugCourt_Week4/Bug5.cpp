@@ -9,13 +9,13 @@ void SavePlayer(std::string name, int level)
 
 void SaveScore(int score)
 {
-    std::ofstream file("player.txt");
+    std::ofstream file("player.txt", std::ios::app);
 
     file << score << '\n';
 }
 // What's the actual bug?
 // A. The second function appends to the original save automatically.
-// B. Opening `player.txt` again with `std::ofstream` truncates the earlier save.
+// B. Opening `player.txt` again with `std::ofstream` truncates the earlier save.  - THIS ONE
 // C. The first function cannot write a string to a file.
 // D. The two functions write to different files.
 // E. The file goblin ate the player data and left behind one suspiciously smug score.

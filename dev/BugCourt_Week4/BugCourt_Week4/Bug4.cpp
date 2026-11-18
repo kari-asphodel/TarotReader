@@ -8,7 +8,8 @@ public:
 
     void TakeDamage(int damage)
     {
-        int health = health - damage;
+        this->health -= damage;
+        // health -= damage;
     }
 
     int GetHealth()
@@ -23,5 +24,5 @@ private:
 // A. The constructor always sets health to zero.
 // B. `TakeDamage()` is never allowed to take parameters.
 // C. The damage value is added to the member health.
-// D. A local `health` variable shadows the member, so the member is not reduced.
+// D. A local `health` variable shadows the member, so the member is not reduced.  - THIS ONE
 // E. The enemy has purchased the deluxe immortality package from the Necromancer Health Network.

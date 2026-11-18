@@ -1,7 +1,7 @@
 class Player
 {
 public:
-    void Player()
+    Player()
     {
         health = 100;
     }
@@ -16,7 +16,7 @@ private:
 };
 
 // What is the actual bug ?
-// A. The supposed constructor has a `void` return type, which is invalid for a constructor.
+// A. The supposed constructor has a `void` return type, which is invalid for a constructor.  - THIS ONE
 // B. The class has no private fields.
 // C. `GetHealth()` must be declared static.
 // D. The member variable must be a string.
