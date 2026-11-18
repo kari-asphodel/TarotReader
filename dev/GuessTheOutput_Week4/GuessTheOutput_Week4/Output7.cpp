@@ -1,0 +1,23 @@
+#include <vector>
+#include <iostream>
+
+void Output7()
+{
+    std::vector<int> numbers = { 1, 2, 3 };
+
+    for (int number : numbers)
+    {
+        number *= 2;
+    }
+
+    for (int number : numbers)
+    {
+        std::cout << number << " ";
+    }
+}
+
+//A 1 2 3 - THIS ONE
+//B 2 4 6
+//C 2 2 2
+//D Compile Error
+//E The numbers become sentient and demand to be doubled in moonlight.

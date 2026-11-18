@@ -1,0 +1,20 @@
+#include <iostream>
+void AddTen(int number)
+{
+    number += 10;
+}
+
+void Output3()
+{
+    int value = 5;
+
+    AddTen(value);
+
+    std::cout << value;
+}
+
+//A 5 - THIS ONE
+//B 10
+//C 15
+//D Compile Error
+//E The copied integer enters a mirror dimension and sends back 666.

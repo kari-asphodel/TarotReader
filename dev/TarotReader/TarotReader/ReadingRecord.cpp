@@ -3,10 +3,11 @@
 
 #include <iostream>
 
-ReadingRecord::ReadingRecord(const std::string& readingType, const std::string& question)
+ReadingRecord::ReadingRecord(const std::string& readingType, const std::string& question, const std::string& date)
 {
 	this->readingType = readingType;
 	this->question = question;
+	this->date = date;
 }
 
 void ReadingRecord::AddCard(const std::string& position, const std::string& cardName, bool isRevesed)
@@ -22,6 +23,8 @@ void ReadingRecord::Display() const
 	std::cout << "\n";
 	ConsoleColor::Print("Question: ", ConsoleColor::Ink::Yellow);
 	std::cout << question << "\n\n";
+	ConsoleColor::Print("Date: ", ConsoleColor::Ink::Cyan);
+	std::cout << date << "\n\n";
 
 	for (std::size_t i = 0; i < cardNames.size(); i++)
 	{
@@ -40,4 +43,35 @@ void ReadingRecord::Display() const
 		}
 		ConsoleColor::Print("----------------------------------------\n", ConsoleColor::Ink::Purple);
 	}
+}
+
+std::string ReadingRecord::GetReadingType() const
+{
+	return readingType;
+}
+std::string ReadingRecord::GetQuestion() const
+{
+	return question;
+}
+std::string ReadingRecord::GetDate() const
+{
+	return date;
+}
+
+int ReadingRecord::GetCardCount() const
+{
+	return static_cast<int>(cardNames.size());
+}
+std::string ReadingRecord::GetPosition(int index) const
+{
+	return positions.at(index);
+}
+
+std::string ReadingRecord::GetCardName(int index) const
+{
+	return cardNames.at(index);
+}
+bool ReadingRecord::GetReversedState(int index) const
+{
+	return reversedStates.at(index);
 }
